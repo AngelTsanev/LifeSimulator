@@ -2,6 +2,7 @@ import time
 from rgbmatrix import RGBMatrix
 from rgbmatrix import graphics
 from random import randint as rand
+from config import *
 
 N = 64
 M = 32
@@ -44,14 +45,14 @@ for i in range(N):
 for i in range(10):
         x = rand(0,N-1)
         y = rand(0,M-1)
-        B[x][y].food = 50
+        B[x][y].food = INIT_FOOD
+        B[x][y].colorize(x,y)
 
 # generate population
 IDs = []
-P = 50
 
 class Id:
-        def __init__ (self, sex, race, age, fitness, health, x, y, status, last2):
+        def __init__ (self, sex, race, age, fitness, health, x, y, status, mate_stat, last2):
             self.sex = sex
             self.race = race
             self.age = age
@@ -60,6 +61,7 @@ class Id:
             self.x = x
             self.y = y
             self.status = status
+            self.mate_stat = mate_stat
             self.last2 = last2
 
         def to_dict(self):
@@ -87,13 +89,15 @@ class Id:
             B[x][y].Ids.remove(self)
             
             # search for partner
-            if self.age > 10:
+            if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
                 for it in B[nx][ny].Ids:
-                    if it.age > 10 and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
+                    if it.age > MATE_AGE and it.mate_stat > MATE_STAT and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
                 else: it = None
             
                 if it:
-                    IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, []))
+                    self.mate_stat = 0
+                    it.mate_stat = 0
+                    IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, 0, []))
                     B[nx][ny].Ids.append(IDs[-1])
      
             # check for food
@@ -107,19 +111,20 @@ class Id:
             
             self.age += 1
             self.health -= 1
+            self.mate_state += 1
             
-            if (self.age > 100 or self.health < 1): self.status = -1
+            if (self.age > MAX_AGE or self.health < 1): self.status = -1
             else: B[nx][ny].Ids.append(self)
             
             # colorize the fields
             B[x][y].colorize(x,y)
             B[nx][ny].colorize(nx,ny)
             
-for i in range(P):
+for i in range(POPULATION):
         x = rand(0,N-1)
         y = rand(0,M-1)
 
-        IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(0,100), x, y, 1, []))
+        IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(0,100), x, y, 1, 0, []))
         B[x][y].Ids.append(IDs[-1])
 
 def print_board(k):
