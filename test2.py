@@ -33,6 +33,9 @@ class BF:
                 else:
                         Matrix.SetPixel(x, y, 100, 100, 255)
 
+        def to_dict(self):
+            return self.__dict__                 
+              
 for i in range(N):
         B.append([])
         for j in range(M):
@@ -59,6 +62,9 @@ class Id:
             self.status = status
             self.last2 = last2
 
+        def to_dict(self):
+            return self.__dict__    
+            
         def Step(self):
             x = self.x
             y = self.y
@@ -80,17 +86,16 @@ class Id:
             
             B[x][y].Ids.remove(self)
             
-            """
             # search for partner
-            if self.age > 10:
+            if self.age > 20:
                 for it in B[nx][ny].Ids:
-                    if it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
+                    if it.age > 20 and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
                 else: it = None
             
                 if it:
                     IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, []))
                     B[nx][ny].Ids.append(IDs[-1])
-            """
+     
             # check for food
             if B[nx][ny].food > 0:
                 B[nx][ny].food -= 1
