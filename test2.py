@@ -13,19 +13,18 @@ Matrix.brightness = 100
 
 R = rand(0,20)
 
-MR = rand(50, 150)
-MG = rand(50, 150)
-MB = rand(50, 150)
+MR = 60
+MG = 60
+MB = 150
 
-FR = MR + 100
-FG = MG + 100
-FB = MB + 100
+FR = 150
+FG = 60
+FB = 60
 
 # generate board and food
 B = []
 
 class BF:
-        """This is a Board Field"""
         def __init__ (self, food, Ids):
             self.food = food
             self.Ids = Ids
@@ -134,24 +133,10 @@ for i in range(POPULATION):
         IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(0,100), x, y, 1, 0, []))
         B[x][y].Ids.append(IDs[-1])
 
-def print_board(k):
-        f = open('step' + str(k) + '.txt','w+')
-
-        for i in range(N):
-                for j in range(M):
-                        if not B[i][j].Ids:
-                                f.write(str(B[i][j].food))
-                        else:
-                                f.write('F' if B[i][j].Ids[0].sex == 0 else 'M')
-                        f.write('\t')
-                f.write('\n')
-
 for i in range(1000):
-        #print_board(i)
-        
         for j in range(len(IDs)):
             IDs[j].Step()
-        
+
         IDs = filter(lambda x: x.status != -1, IDs)
         
         time.sleep(0.2)
