@@ -1,4 +1,4 @@
-import time
+import time, socket, json
 from rgbmatrix import RGBMatrix
 from rgbmatrix import graphics
 from random import randint as rand
@@ -7,24 +7,37 @@ from config import *
 N = 64
 M = 32
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_address = ('192.168.1.6', 7878)
+
+sock.connect(server_address)
+
+recieved_data = ''
+
+
 Matrix = RGBMatrix(32, 2, 1)
 Matrix.pwmBits = 11
 Matrix.brightness = 100
 
 R = rand(0,20)
 
-MR = 60
-MG = 60
-MB = 150
+MR = rand(50, 150)
+MG = rand(50, 150)
+MB = rand(50, 150)
 
-FR = 150
-FG = 60
-FB = 60
+FR = MR + 100
+FG = MG + 100
+FB = MB + 100
+
+def sendData(data):
+        sock.sendall(json.dumps(data.to_JSON()))
+
 
 # generate board and food
 B = []
 
 class BF:
+        """This is a Board Field"""
         def __init__ (self, food, Ids):
             self.food = food
             self.Ids = Ids
@@ -72,6 +85,10 @@ class Id:
 
         def to_dict(self):
             return self.__dict__
+
+        def to_JSON(self):
+            return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
             
         def Step(self):
             x = self.x
@@ -80,7 +97,10 @@ class Id:
             # find next field and remove from current field
             Temp = []
             if (x + 1 < N and (x+1,y) not in self.last2): Temp.append((x+1,y))
-            if (x - 1 >= 0 and (x-1,y) not in self.last2): Temp.append((x-1,y))
+            if (x - 1 >= 0 and (x-1,y) not in self.last2):
+                Temp.append((x-1,y))
+            elif(x - 1 < 0):
+                Temp.append((x-1,y))
             if (y + 1 < M and (x,y+1) not in self.last2): Temp.append((x,y+1))
             if (y - 1 >= 0 and (x,y-1) not in self.last2): Temp.append((x,y-1))
             
@@ -93,38 +113,44 @@ class Id:
             ny = next[1]
             
             B[x][y].Ids.remove(self)
-            
-            # search for partner
-            if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
-                for it in B[nx][ny].Ids:
-                    if it.age > MATE_AGE and it.mate_stat > MATE_STAT and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
-                else: it = None
-            
-                if it:
-                    self.mate_stat = 0
-                    it.mate_stat = 0
-                    IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, 0, []))
-                    B[nx][ny].Ids.append(IDs[-1])
-     
-            # check for food
-            if B[nx][ny].food > 0:
-                B[nx][ny].food -= 1
-                self.health = min(100, self.health + 11)
-            
-            # update self and new field
-            self.x = nx
-            self.y = ny
-            
-            self.age += 1
-            self.health -= 1
-            self.mate_stat += 1
-            
-            if (self.age > MAX_AGE or self.health < 1): self.status = -1
-            else: B[nx][ny].Ids.append(self)
-            
+
+            if(nx < 0):
+                sendData(self)
+            	print self
+		self.status = -1
+            else:
+                
+                # search for partner
+                if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
+                    for it in B[nx][ny].Ids:
+                        if it.age > MATE_AGE and it.mate_stat > MATE_STAT and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
+                    else: it = None
+                
+                    if it:
+                        self.mate_stat = 0
+                        it.mate_stat = 0
+                        IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, 0, []))
+                        B[nx][ny].Ids.append(IDs[-1])
+         
+                # check for food
+                if B[nx][ny].food > 0:
+                    B[nx][ny].food -= 1
+                    self.health = min(100, self.health + 11)
+                
+                # update self and new field
+                self.x = nx
+                self.y = ny
+                
+                self.age += 1
+                self.health -= 1
+                self.mate_stat += 1
+                
+                if (self.age > MAX_AGE or self.health < 1): self.status = -1
+                else: B[nx][ny].Ids.append(self)
+                
+                B[nx][ny].colorize(nx,ny)
             # colorize the fields
             B[x][y].colorize(x,y)
-            B[nx][ny].colorize(nx,ny)
             
 for i in range(POPULATION):
         x = rand(0,N-1)
@@ -133,10 +159,25 @@ for i in range(POPULATION):
         IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(0,100), x, y, 1, 0, []))
         B[x][y].Ids.append(IDs[-1])
 
+def print_board(k):
+        f = open('step' + str(k) + '.txt','w+')
+
+        for i in range(N):
+                for j in range(M):
+                        if not B[i][j].Ids:
+                                f.write(str(B[i][j].food))
+                        else:
+                                f.write('F' if B[i][j].Ids[0].sex == 0 else 'M')
+                        f.write('\t')
+                f.write('\n')
+
 for i in range(1000):
+        #print_board(i)
+        
         for j in range(len(IDs)):
             IDs[j].Step()
-
+        
         IDs = filter(lambda x: x.status != -1, IDs)
         
         time.sleep(0.2)
+
