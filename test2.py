@@ -81,13 +81,14 @@ class Id:
             B[x][y].Ids.remove(self)
             
             # search for partner
-            for it in B[nx][ny].Ids:
-                if it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
-            else: it = None
+            if self.age > 10:
+                for it in B[nx][ny].Ids:
+                    if it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
+                else: it = None
             
-            if it:
-                IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, []))
-                B[nx][ny].Ids.append(IDs[-1])
+                if it:
+                    IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, []))
+                    B[nx][ny].Ids.append(IDs[-1])
             
             # check for food
             if B[nx][ny].food > 0:
@@ -103,7 +104,7 @@ class Id:
             
             B[nx][ny].Ids.append(self)
             
-            if (self.age > 100 or self.health < 1) self.status = -1
+            if (self.age > 100 or self.health < 1): self.status = -1
             
             # colorize the fields
             B[x][y].colorize(x,y)
