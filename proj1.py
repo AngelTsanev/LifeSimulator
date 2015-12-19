@@ -63,10 +63,19 @@ class Id:
                 y = self.y
                 
                 Temp = []
-                if (x + 1 < N): Temp.append((x+1,y))
-                if (x - 1 >= 0): Temp.append((x-1,y))
-                if (y + 1 < M): Temp.append((x,y+1))
-                if (y - 1 >= 0): Temp.append((x,y-1))
+                if (x + 1 < N):
+					Temp.append((x+1,y))
+					if (y + 1 < M):
+						Temp.append((x,y+1))
+						Temp.append((x+1,y+1))
+					if (y - >= 0):
+						Temp.append((x,y-1))
+						Temp.append((x+1,y-1))			
+			
+				if (x - 1 >= 0):
+					Temp.append((x-1,y))
+					if (y + 1 < M): Temp.append((x-1,y+1))
+					if (y - >= 0): Temp.append((x-1,y-1))	
 
                 next = Temp[rand(0,len(Temp) - 1)]
 
@@ -111,4 +120,4 @@ for i in range(1000):
 
         for j in range(P):
                 IDs[j].Step()
-        time.sleep(0.5)
+        time.sleep(0.2)
