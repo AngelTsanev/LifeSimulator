@@ -13,30 +13,37 @@ Matrix.brightness = 100
 
 R = rand(0,20)
 
+MR = rand(50, 150)
+MG = rand(50, 150)
+MB = rand(50, 150)
+
+FR = MR + 100
+FG = MG + 100
+FB = MB + 100
+
 # generate board and food
 B = []
 
 class BF:
         """This is a Board Field"""
         def __init__ (self, food, Ids):
-                self.food = food
-                self.Ids = Ids
+            self.food = food
+            self.Ids = Ids
 
         def colorize(self, x, y):
-                if self.food == 0 and (not self.Ids):
-                        Matrix.SetPixel(x, y, 0, 0, 0)
-                elif self.food > 0 and (not self.Ids):
-                        Matrix.SetPixel(x, y, 100, 255, 100)
-                elif len(self.Ids) > 1:
-                        Matrix.SetPixel(x, y, 255, 255, 0)
-                elif self.Ids[0].sex == 0:
-                        Matrix.SetPixel(x, y, 255, 100, 100)
-                else:
-                        Matrix.SetPixel(x, y, 100, 100, 255)
+            if self.food == 0 and (not self.Ids):
+                Matrix.SetPixel(x, y, 0, 0, 0)
+            elif self.food > 0 and (not self.Ids):
+                Matrix.SetPixel(x, y, 100, 255, 100)
+            elif len(self.Ids) > 1:
+                Matrix.SetPixel(x, y, 255, 255, 0)
+            elif self.Ids[0].sex == 0:
+                Matrix.SetPixel(x, y, FR, FG, FB)
+            else: Matrix.SetPixel(x, y, MR, MG, MB)
 
         def to_dict(self):
-            return self.__dict__                 
-              
+            return self.__dict__
+
 for i in range(N):
         B.append([])
         for j in range(M):
@@ -65,7 +72,7 @@ class Id:
             self.last2 = last2
 
         def to_dict(self):
-            return self.__dict__    
+            return self.__dict__
             
         def Step(self):
             x = self.x
