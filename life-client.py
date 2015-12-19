@@ -115,7 +115,8 @@ class Id:
             B[x][y].Ids.remove(self)
 
             if(nx < 0):
-                sendData(self)
+                self.x = N+nx
+		sendData(self)
             	print self
 		self.status = -1
             else:
