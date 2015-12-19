@@ -111,7 +111,7 @@ class Id:
             
             self.age += 1
             self.health -= 1
-            self.mate_state += 1
+            self.mate_stat += 1
             
             if (self.age > MAX_AGE or self.health < 1): self.status = -1
             else: B[nx][ny].Ids.append(self)
