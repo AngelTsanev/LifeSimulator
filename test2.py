@@ -45,7 +45,7 @@ for i in range(10):
 
 # generate population
 IDs = []
-P = 100
+P = 50
 
 class Id:
         def __init__ (self, sex, race, age, fitness, health, x, y, status, last2):
@@ -80,6 +80,7 @@ class Id:
             
             B[x][y].Ids.remove(self)
             
+            """
             # search for partner
             if self.age > 10:
                 for it in B[nx][ny].Ids:
@@ -89,7 +90,7 @@ class Id:
                 if it:
                     IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, []))
                     B[nx][ny].Ids.append(IDs[-1])
-            
+            """
             # check for food
             if B[nx][ny].food > 0:
                 B[nx][ny].food -= 1
@@ -129,13 +130,12 @@ def print_board(k):
                         f.write('\t')
                 f.write('\n')
 
-for i in range(20):
+for i in range(1000):
         #print_board(i)
         
-        j = 0
-        while j < len(IDs):
+        for j in range(len(IDs)):
             IDs[j].Step()
-            if (IDs[j].status == -1): IDs.pop(j)
-            else: j += 1
-            
+        
+        IDs = filter(lambda x: x.status != -1, IDs)
+        
         time.sleep(0.2)
