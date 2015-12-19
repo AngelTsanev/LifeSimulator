@@ -87,9 +87,9 @@ class Id:
             B[x][y].Ids.remove(self)
             
             # search for partner
-            if self.age > 20:
+            if self.age > 10:
                 for it in B[nx][ny].Ids:
-                    if it.age > 20 and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
+                    if it.age > 10 and it.sex == 1 - self.sex and it.fitness >= self.fitness//2: break
                 else: it = None
             
                 if it:
@@ -101,16 +101,15 @@ class Id:
                 B[nx][ny].food -= 1
                 self.health = min(100, self.health + 11)
             
-            # update self
+            # update self and new field
             self.x = nx
             self.y = ny
             
             self.age += 1
             self.health -= 1
             
-            B[nx][ny].Ids.append(self)
-            
             if (self.age > 100 or self.health < 1): self.status = -1
+            else: B[nx][ny].Ids.append(self)
             
             # colorize the fields
             B[x][y].colorize(x,y)
