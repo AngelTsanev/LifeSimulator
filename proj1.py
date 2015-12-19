@@ -23,16 +23,12 @@ class BF:
         def colorize(self, x, y):
                 if self.food == 0 and (not self.Ids):
                         Matrix.SetPixel(x, y, 0, 0, 0)
-
                 elif self.food > 0 and (not self.Ids):
                         Matrix.SetPixel(x, y, 100, 255, 100)
-
                 elif len(self.Ids) > 1:
                         Matrix.SetPixel(x, y, 255, 255, 0)
-
                 elif self.Ids[0].sex == 0:
                         Matrix.SetPixel(x, y, 255, 100, 100)
-
                 else:
                         Matrix.SetPixel(x, y, 100, 100, 255)
 
@@ -50,46 +46,48 @@ for i in range(10):
 
 class Id:
         def __init__ (self, sex, race, age, fitness, health, x, y):
-                self.sex = sex
-                self.race = race
-                self.age = age
-                self.fitness = fitness
-                self.health = health
-                self.x = x
-                self.y = y
+          self.sex = sex
+          self.race = race
+          self.age = age
+          self.fitness = fitness
+          self.health = health
+          self.x = x
+          self.y = y
 
         def Step(self):
-                x = self.x
-                y = self.y
-                
-                Temp = []
-                if (x + 1 < N):
-					Temp.append((x+1,y))
-					if (y + 1 < M):
-						Temp.append((x,y+1))
-						Temp.append((x+1,y+1))
-					if (y - >= 0):
-						Temp.append((x,y-1))
-						Temp.append((x+1,y-1))			
-			
-				if (x - 1 >= 0):
-					Temp.append((x-1,y))
-					if (y + 1 < M): Temp.append((x-1,y+1))
-					if (y - >= 0): Temp.append((x-1,y-1))	
+          x = self.x
+          y = self.y
+          
+          Temp = []
+          if (x + 1 < N):
+            Temp.append((x+1,y))
+            if (y + 1 < M):
+              Temp.append((x,y+1))
+              Temp.append((x+1,y+1))
+            if (y - 1 >= 0):
+              Temp.append((x,y-1))
+              Temp.append((x+1,y-1))
+      
+          if (x - 1 >= 0):
+            Temp.append((x-1,y))
+            if (y + 1 < M):
+              Temp.append((x-1,y+1))
+            if (y - 1 >= 0):
+              Temp.append((x-1,y-1))
 
-                next = Temp[rand(0,len(Temp) - 1)]
+          next = Temp[rand(0,len(Temp) - 1)]
 
-                B[x][y].Ids.remove(self)
-                B[next[0]][next[1]].Ids.append(self)
-                if B[next[0]][next[1]].food > 0:
-                        B[next[0]][next[1]].food -= 1
-                        self.health = min(100, self.health + 10)
+          B[x][y].Ids.remove(self)
+          B[next[0]][next[1]].Ids.append(self)
+          if B[next[0]][next[1]].food > 0:
+            B[next[0]][next[1]].food -= 1
+            self.health = min(100, self.health + 10)
 
-                B[x][y].colorize(x,y)
-                B[next[0]][next[1]].colorize(next[0],next[1])
+          B[x][y].colorize(x,y)
+          B[next[0]][next[1]].colorize(next[0],next[1])
 
-                self.x = next[0]
-                self.y = next[1]
+          self.x = next[0]
+          self.y = next[1]
 
 #generate id-s  
 IDs = []
