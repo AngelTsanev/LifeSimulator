@@ -9,7 +9,7 @@ M = 32
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('192.168.1.6', 7878)
-
+#sock.setblocking(False)
 sock.bind(server_address)
 
 sock.listen(1)
@@ -33,17 +33,20 @@ def sendData(data):
 
 def recieveData():
         recieved_data = ''
-        conn, addr = sock.accept()
-        #if(conn): return
-        #while True:
-        data = conn.recv(1024000)
-        #        if data:
-        print data
-	recieved_data += data
+	try:
+        	conn, addr = sock.accept()
+        	#if(conn): return
+        	#while True:
+        	data = conn.recv(1024000)
+        	#        if data:
+        	print data
+		recieved_data += data
         #        else: break
-        return recieved_data
-
-
+	except:
+		pass
+	#finally:
+	#	conn.close()
+	return recieved_data
 
 # generate board and food
 B = []
@@ -123,15 +126,7 @@ class Id:
             
             nx = next[0]
             ny = next[1]
-
-            data = recieveData()
-            object = json.loads(json.loads(data))
-	    print object["sex"]
-  	    id = Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"])
-            IDs.append(id)
-            B[id.x][id.y].Ids.append(id)
-            B[id.x][id.y].colorize(id.x, id.y)
-            
+	    
             B[x][y].Ids.remove(self)
             # search for partner
             if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
@@ -186,9 +181,17 @@ def print_board(k):
 
 for i in range(1000):
         #print_board(i)
-        
+        t = []
         for j in range(len(IDs)):
-            IDs[j].Step()
+            	data = recieveData()
+        	if(data != ''):
+                	object = json.loads(json.loads(data))
+                	t.append(Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"]))
+			B[t[-1].x][t[-1].y].Ids.append(t[-1])
+		IDs[j].Step()
+	for j in range(len(t)):
+		t[j].Step()
+		IDs.append(t[j])
         
         IDs = filter(lambda x: x.status != -1, IDs)
         
