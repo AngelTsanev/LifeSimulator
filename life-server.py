@@ -187,7 +187,7 @@ for i in range(1000):
             if(data != ''):
                 object = json.loads(json.loads(data))
                 t.append(Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"]))
-            B[t[-1].x][t[-1].y].Ids.append(t[-1])
+                B[t[-1].x][t[-1].y].Ids.append(t[-1])
         IDs[j].Step()
         for j in range(len(t)):
             t[j].Step()
