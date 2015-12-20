@@ -9,7 +9,7 @@ M = 32
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('192.168.1.6', 7878)
-#sock.setblocking(False)
+sock.setblocking(False)
 sock.bind(server_address)
 
 sock.listen(1)
@@ -33,20 +33,20 @@ def sendData(data):
 
 def recieveData():
         recieved_data = ''
-	try:
-        	conn, addr = sock.accept()
-        	#if(conn): return
-        	#while True:
-        	data = conn.recv(1024000)
-        	#        if data:
-        	print data
-		recieved_data += data
+        try:
+            conn, addr = sock.accept()
+            #if(conn): return
+            #while True:
+            data = conn.recv(1024000)
+            #        if data:
+            print data
+            recieved_data += data
         #        else: break
-	except:
-		pass
-	#finally:
-	#	conn.close()
-	return recieved_data
+        except:
+            pass
+        #finally:
+        #	conn.close()
+        return recieved_data
 
 # generate board and food
 B = []
