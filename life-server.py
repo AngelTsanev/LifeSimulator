@@ -170,10 +170,11 @@ class Id:
            		other.status = -1
            		self.health = self.health // 2
             		self.fitness += 2
-        	else:
-            	    self.status = -1
-            	    other.health = other.health // 2
-            	    other.fitness += 2	    
+        	    else:
+            	   	self.status = -1
+            	    	other.health = other.health // 2
+            	    	other.fitness += 2
+		    break
             
             # update self and new field
             self.x = nx
