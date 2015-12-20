@@ -116,9 +116,9 @@ class Id:
 
             if(nx < 0):
                 self.x = N+nx
-		sendData(self)
-            	print self
-		self.status = -1
+                sendData(self)
+                print self
+                self.status = -1
             else:
                 
                 # search for partner
