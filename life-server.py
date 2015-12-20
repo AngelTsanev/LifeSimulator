@@ -39,13 +39,14 @@ def recieveData():
             #while True:
             data = conn.recv(1024000)
             #        if data:
-            print data
+            #print data
             recieved_data += data
         #        else: break
         except:
             pass
-        finally:
-            conn.close()
+        #finally:
+        #    conn.close()
+        print recieved_data
         return recieved_data
 
 # generate board and food

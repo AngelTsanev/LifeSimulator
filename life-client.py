@@ -30,6 +30,7 @@ FG = MG + 100
 FB = MB + 100
 
 def sendData(data):
+        print data
         sock.sendall(json.dumps(data.to_JSON()))
 
 
@@ -117,7 +118,6 @@ class Id:
             if(nx < 0):
                 self.x = N+nx
                 sendData(self)
-                print self
                 self.status = -1
             else:
                 
