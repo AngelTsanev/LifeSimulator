@@ -123,7 +123,7 @@ class Id:
                 sendData(self, True)
                 self.status = -1
             else:
-                sendData(self, False)
+                #sendData(self, False)
                 # search for partner
                 if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
                     for it in B[nx][ny].Ids:
