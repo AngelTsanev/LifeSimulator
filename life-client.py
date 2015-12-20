@@ -31,10 +31,10 @@ FB = MB + 100
 
 def sendData(data, full):
         print data
-        if(full):
-            sock.sendall(json.dumps(data.to_JSON()))
-        else:
-            sock.sendall("")
+        #if(full):
+        sock.sendall(json.dumps(data.to_JSON()))
+        #else:
+            #sock.sendall("")
 
 
 # generate board and food
