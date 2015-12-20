@@ -185,7 +185,7 @@ class Id:
                 self.mate_stat += 1
                 
                 if (self.age > MAX_AGE or self.health < 1): self.status = -1
-                else: B[nx][ny].Ids.append(self)
+                if (self.status != -1): B[nx][ny].Ids.append(self)
                 
                 B[nx][ny].colorize(nx,ny)
             # colorize the fields
