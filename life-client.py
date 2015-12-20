@@ -23,23 +23,6 @@ Matrix.brightness = 100
 
 R = rand(0,2)
 
-MR = RaceColors[R][1][0]
-MG = RaceColors{R][1][1]
-MB = RaceColors[R][1][2]
-
-FR = RaceColors[R][0][0]
-FG = RaceColors[R][0][1]
-FB = RaceColors[R][0][2]
-#R = rand(0,20)
-
-#MR = rand(50, 150)
-#MG = rand(50, 150)
-#MB = rand(50, 150)
-
-#FR = MR + 100
-#FG = MG + 100
-#FB = MB + 100
-
 def sendData(data, full):
 #        print data
 	try:
@@ -83,8 +66,11 @@ class BF:
                 Matrix.SetPixel(x, y, 100, 255, 100)
             elif len(self.Ids) > 1:
                 Matrix.SetPixel(x, y, 255, 255, 0)
-            elif:
-                Matrix.SetPixel(x, y, RaceColors[self.Ids[0].race][self.Ids[0].sex][0], RaceColors[self.Ids[0].race][self.Ids[0].sex][1], RaceColors[self.Ids[0].race][self.Ids[0].sex][2]
+            else:
+                Matrix.SetPixel(x, y,
+				RaceColors[self.Ids[0].race][self.Ids[0].sex][0],
+				RaceColors[self.Ids[0].race][self.Ids[0].sex][1],
+				RaceColors[self.Ids[0].race][self.Ids[0].sex][2])
 
 
         def to_dict(self):
