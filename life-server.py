@@ -44,8 +44,8 @@ def recieveData():
         #        else: break
         except:
             pass
-        #finally:
-        #	conn.close()
+        finally:
+            conn.close()
         return recieved_data
 
 # generate board and food
