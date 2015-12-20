@@ -154,7 +154,7 @@ class Id:
                     if it:
                         self.mate_stat = 0
                         it.mate_stat = 0
-                        IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, 0, []))
+                        IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(100, 200), nx, ny, 1, 0, []))
                         B[nx][ny].Ids.append(IDs[-1])
          
 
@@ -174,7 +174,7 @@ class Id:
                 # check for food
                 if B[nx][ny].food > 0:
                     B[nx][ny].food -= 1
-                    self.health = min(100, self.health + 11)
+                    self.health = min(200, self.health + 11)
                 
                 # update self and new field
                 self.x = nx
@@ -195,20 +195,9 @@ for i in range(POPULATION):
         x = rand(0,N-1)
         y = rand(0,M-1)
 
-        IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(0,100), x, y, 1, 0, []))
+        IDs.append(Id(rand(0,1), R, 1, rand(0,100), rand(100, 200), x, y, 1, 0, []))
         B[x][y].Ids.append(IDs[-1])
 
-def print_board(k):
-        f = open('step' + str(k) + '.txt','w+')
-
-        for i in range(N):
-                for j in range(M):
-                        if not B[i][j].Ids:
-                                f.write(str(B[i][j].food))
-                        else:
-                                f.write('F' if B[i][j].Ids[0].sex == 0 else 'M')
-                        f.write('\t')
-                f.write('\n')
 
 for i in range(1000):
         #print_board(i)
