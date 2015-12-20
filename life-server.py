@@ -10,9 +10,16 @@ M = 32
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('192.168.1.6', 7878)
 sock.setblocking(False)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.bind(server_address)
 
 sock.listen(1)
+
+#try:
+#	conn, addr = sock.accept()
+#except socket.error, e:
+#        print time.clock(), e
+
 
 Matrix = RGBMatrix(32, 2, 1)
 Matrix.pwmBits = 11
@@ -28,25 +35,42 @@ FR = MR + 100
 FG = MG + 100
 FB = MB + 100
 
+def parse(data):
+	data = data.split(',')
+	data = map(lambda x: int(x), data)
+	return Id(data[0], data[1], data[2], data[3], data[4], data[5], data[6], 0, data[7], [])
+
 def sendData(data):
         sock.sendall(json.dumps(data.to_JSON()))
 
 def recieveData():
         recieved_data = ''
+	#conn, addr = sock.accept()
         try:
+	    #global conn
             conn, addr = sock.accept()
-            #if(conn): return
+#	    conn.setblocking(False)
+            print addr
+	    #if(conn): return
             #while True:
-            data = conn.recv(1024000)
+#	    conn.setblocking(0.4)
+            data = conn.recv(1024)
             #        if data:
-            #print data
+            print data
             recieved_data += data
-        #        else: break
-        except:
-            pass
-        #finally:
+       	    conn.close()
+ 	    #else: break
+	    #conn.send("alive")
+        except socket.error, e:
+            #pass
+	    #conn.close()
+	    print time.clock(), e
+        #else:
+	    #print data
+	    #recieved_data += data
+	#finally:
         #    conn.close()
-        print recieved_data
+        #print recieved_data
         return recieved_data
 
 # generate board and food
@@ -180,15 +204,23 @@ def print_board(k):
                         f.write('\t')
                 f.write('\n')
 
-for i in range(1000):
+while True:
+#	sock.send("alive")
+#for i in range(1000):
         #print_board(i)
         t = []
+	data = recieveData()
+        if(data != ''):
+            #object = json.loads(json.loads(data))
+            #t.append(Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"]))
+	    t.append(parse(data))        
+	    B[t[-1].x][t[-1].y].Ids.append(t[-1])
         for j in range(len(IDs)):
-            data = recieveData()
-            if(data != ''):
-                object = json.loads(json.loads(data))
-                t.append(Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"]))
-                B[t[-1].x][t[-1].y].Ids.append(t[-1])
+        #    data = recieveData()
+        #    if(data != ''):
+        #        object = json.loads(json.loads(data))
+        #        t.append(Id(object["sex"], object["race"], object["age"], object["fitness"], object["health"], object["x"], object["y"], object["status"], object["mate_stat"], object["last2"]))
+        #        B[t[-1].x][t[-1].y].Ids.append(t[-1])
             IDs[j].Step()
         for j in range(len(t)):
             t[j].Step()
@@ -196,5 +228,5 @@ for i in range(1000):
         
         IDs = filter(lambda x: x.status != -1, IDs)
         
-        time.sleep(0.2)
-
+        time.sleep(0.4)
+#	sock.send("alive")
