@@ -84,7 +84,7 @@ class BF:
             elif len(self.Ids) > 1:
                 Matrix.SetPixel(x, y, 255, 255, 0)
             elif:
-                Matrix.SetPixel(x, y, RaceColor[self.Ids[0].race][self.Ids[0].sex][0], RaceColor[self.Ids[0].race][self.Ids[0].sex][1], RaceColor[self.Ids[0].race][self.Ids[0].sex][2]
+                Matrix.SetPixel(x, y, RaceColors[self.Ids[0].race][self.Ids[0].sex][0], RaceColors[self.Ids[0].race][self.Ids[0].sex][1], RaceColors[self.Ids[0].race][self.Ids[0].sex][2]
 
 
         def to_dict(self):
