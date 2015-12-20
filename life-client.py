@@ -1,4 +1,4 @@
-import time, socket, json
+import time, socket, json, sys
 from rgbmatrix import RGBMatrix
 from rgbmatrix import graphics
 from random import randint as rand
@@ -9,11 +9,12 @@ M = 32
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('192.168.1.6', 7878)
-
+#sock.setblocking(False)
 sock.connect(server_address)
 
 recieved_data = ''
 
+sended = False
 
 Matrix = RGBMatrix(32, 2, 1)
 Matrix.pwmBits = 11
@@ -30,11 +31,30 @@ FG = MG + 100
 FB = MB + 100
 
 def sendData(data, full):
-        print data
-        #if(full):
-        sock.sendall(json.dumps(data.to_JSON()))
-        #else:
-            #sock.sendall("")
+#        print data
+	try:
+        	if(full):
+			print data	
+			data = data.serialize()
+			sys.getsizeof(data)
+			sock.sendall(data)
+        		#while data:
+    			#	sent = sock.send(data)
+    			#	data = data[sent:]
+		else:
+            		sock.sendall("")
+	except Exception as e:
+                print e
+                #sock.close()
+                #global sock
+                #sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                #sock.connect(server_address) 
+        finally:
+                 sock.close()
+                 global sock
+                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                 sock.connect(server_address)
+#               sock.setblocking(0.2)
 
 
 # generate board and food
@@ -86,7 +106,10 @@ class Id:
             self.status = status
             self.mate_stat = mate_stat
             self.last2 = last2
-
+	
+	def serialize(self):
+	    return str(self.sex) + ',' + str(self.race) + ',' + str(self.age) + ',' + str(self.fitness) + ',' + str(self.health) + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.mate_stat)
+		
         def to_dict(self):
             return self.__dict__
 
@@ -119,11 +142,13 @@ class Id:
             B[x][y].Ids.remove(self)
 
             if(nx < 0):
+		sended = True
                 self.x = N+nx
                 sendData(self, True)
                 self.status = -1
             else:
-                #sendData(self, False)
+                sended = False
+		#sendData(self, False)
                 # search for partner
                 if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
                     for it in B[nx][ny].Ids:
@@ -180,8 +205,9 @@ for i in range(1000):
         
         for j in range(len(IDs)):
             IDs[j].Step()
-        
+        if(not sended):
+		sendData("", False)
         IDs = filter(lambda x: x.status != -1, IDs)
         
-        time.sleep(0.2)
+        time.sleep(0.4)
 
