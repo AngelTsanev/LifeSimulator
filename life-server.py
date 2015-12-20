@@ -21,8 +21,8 @@ Matrix.brightness = 100
 R = rand(0,20)
 
 MR = rand(50, 150)
-MG = rand(50, 150)
-MB = rand(50, 150)
+MG = 0#rand(50, 150)
+MB = 0#rand(50, 150)
 
 FR = MR + 100
 FG = MG + 100
