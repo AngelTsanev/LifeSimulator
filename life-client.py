@@ -20,15 +20,25 @@ Matrix = RGBMatrix(32, 2, 1)
 Matrix.pwmBits = 11
 Matrix.brightness = 100
 
-R = rand(0,20)
 
-MR = rand(50, 150)
-MG = rand(50, 150)
-MB = rand(50, 150)
+R = rand(0,2)
 
-FR = MR + 100
-FG = MG + 100
-FB = MB + 100
+MR = RaceColors[R][1][0]
+MG = RaceColors{R][1][1]
+MB = RaceColors[R][1][2]
+
+FR = RaceColors[R][0][0]
+FG = RaceColors[R][0][1]
+FB = RaceColors[R][0][2]
+#R = rand(0,20)
+
+#MR = rand(50, 150)
+#MG = rand(50, 150)
+#MB = rand(50, 150)
+
+#FR = MR + 100
+#FG = MG + 100
+#FB = MB + 100
 
 def sendData(data, full):
 #        print data
@@ -73,9 +83,9 @@ class BF:
                 Matrix.SetPixel(x, y, 100, 255, 100)
             elif len(self.Ids) > 1:
                 Matrix.SetPixel(x, y, 255, 255, 0)
-            elif self.Ids[0].sex == 0:
-                Matrix.SetPixel(x, y, FR, FG, FB)
-            else: Matrix.SetPixel(x, y, MR, MG, MB)
+            elif:
+                Matrix.SetPixel(x, y, RaceColor[self.Ids[0].race][self.Ids[0].sex][0], RaceColor[self.Ids[0].race][self.Ids[0].sex][1], RaceColor[self.Ids[0].race][self.Ids[0].sex][2]
+
 
         def to_dict(self):
             return self.__dict__
@@ -161,6 +171,19 @@ class Id:
                         IDs.append(Id(rand(0,1), R, 1, (it.fitness + self.fitness)//2, rand(0,100), nx, ny, 1, 0, []))
                         B[nx][ny].Ids.append(IDs[-1])
          
+
+		# FIGHT
+		for other in B[nx][ny].Ids:
+		    if self.race != other.race:
+        		if self.fitness >= other.fitness:
+            		    other.status = -1
+               		    self.health = self.health // 2
+            		    self.fitness += 2
+       	 	    else:
+            		self.status = -1
+            		other.health = other.health // 2
+            		other.fitness += 2
+
                 # check for food
                 if B[nx][ny].food > 0:
                     B[nx][ny].food -= 1

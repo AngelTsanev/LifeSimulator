@@ -25,15 +25,9 @@ Matrix = RGBMatrix(32, 2, 1)
 Matrix.pwmBits = 11
 Matrix.brightness = 100
 
-R = rand(0,20)
 
-MR = rand(50, 150)
-MG = 0#rand(50, 150)
-MB = 0#rand(50, 150)
 
-FR = MR + 100
-FG = MG + 100
-FB = MB + 100
+R = rand(0,2)
 
 def parse(data):
 	data = data.split(',')
@@ -86,12 +80,11 @@ class BF:
             if self.food == 0 and (not self.Ids):
                 Matrix.SetPixel(x, y, 0, 0, 0)
             elif self.food > 0 and (not self.Ids):
-                Matrix.SetPixel(x, y, 100, 255, 100)
+                Matrix.SetPixel(x, y, 0, 155, 00)
             elif len(self.Ids) > 1:
                 Matrix.SetPixel(x, y, 255, 255, 0)
-            elif self.Ids[0].sex == 0:
-                Matrix.SetPixel(x, y, FR, FG, FB)
-            else: Matrix.SetPixel(x, y, MR, MG, MB)
+            else:
+                Matrix.SetPixel(x, y, RaceColor[self.Ids[0].race][self.Ids[0].sex][0], RaceColor[self.Ids[0].race][self.Ids[0].sex][1], RaceColor[self.Ids[0].race][self.Ids[0].sex][2])
 
         def to_dict(self):
             return self.__dict__
@@ -169,6 +162,18 @@ class Id:
             if B[nx][ny].food > 0:
                 B[nx][ny].food -= 1
                 self.health = min(100, self.health + 11)
+
+	    # FIGHT
+	    for other in B[nx][ny].Ids:
+    		if self.race != other.race:
+        	    if self.fitness >= other.fitness:
+           		other.status = -1
+           		self.health = self.health // 2
+            		self.fitness += 2
+        	else:
+            	    self.status = -1
+            	    other.health = other.health // 2
+            	    other.fitness += 2	    
             
             # update self and new field
             self.x = nx
