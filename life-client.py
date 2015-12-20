@@ -29,9 +29,12 @@ FR = MR + 100
 FG = MG + 100
 FB = MB + 100
 
-def sendData(data):
+def sendData(data, full):
         print data
-        sock.sendall(json.dumps(data.to_JSON()))
+        if(full):
+            sock.sendall(json.dumps(data.to_JSON()))
+        else:
+            sock.sendall("")
 
 
 # generate board and food
@@ -117,10 +120,10 @@ class Id:
 
             if(nx < 0):
                 self.x = N+nx
-                sendData(self)
+                sendData(self, True)
                 self.status = -1
             else:
-                
+                sendData(self, False)
                 # search for partner
                 if self.age > MATE_AGE and self.mate_stat > MATE_STAT:
                     for it in B[nx][ny].Ids:

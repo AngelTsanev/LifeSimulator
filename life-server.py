@@ -9,7 +9,7 @@ M = 32
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('192.168.1.6', 7878)
-sock.setblocking(False)
+#sock.setblocking(False)
 sock.bind(server_address)
 
 sock.listen(1)
